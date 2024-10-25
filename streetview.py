@@ -19,6 +19,7 @@ class StreetViewScraper:
         self.long = long
         self.lat = lat
         self.driver = self.initialize_driver()
+        self.create_images_folder()
 
     @staticmethod
     def initialize_driver() -> webdriver.Chrome:
@@ -44,7 +45,7 @@ class StreetViewScraper:
             - driver (webdriver.Chrome): The WebDriver instance used to interact with the webpage.
         """
         cookie_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/div[1]/form[2]/div/div/button/span'))
+            EC.presence_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[1]/div[*]/div[1]/div[1]/form[2]/div/div/button/span'))
         )
         cookie_button.click()
 
@@ -76,9 +77,9 @@ class StreetViewScraper:
         self.driver.get(self.URL_TEMPLATE.format(long=self.long, lat=self.lat))
         self.accept_cookies(self.driver)
 
-        time.sleep(1)
+        time.sleep(2)
 
-        # Collapse the side panel
+        # Click the streetview button
         element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.CSS_SELECTOR_STREETVIEW_BUTTON))
         )
@@ -90,7 +91,6 @@ class StreetViewScraper:
         time.sleep(2)
 
         # Save the screenshot of the streetview
-        self.create_images_folder()
         self.driver.save_screenshot(self.SCREENSHOT_PATH)
 
         # Quit the driver
