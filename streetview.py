@@ -34,6 +34,9 @@ class StreetViewScraper:
         chrome_options.add_argument("--disable-search-engine-choice-screen")
         driver = webdriver.Chrome(options=chrome_options)
         driver.maximize_window()
+
+        driver.get("https://www.google.com/maps")
+        StreetViewScraper.accept_cookies(driver)
         return driver
     
     @staticmethod
@@ -75,7 +78,6 @@ class StreetViewScraper:
         
         # Go to the specified location
         self.driver.get(self.URL_TEMPLATE.format(long=self.long, lat=self.lat))
-        self.accept_cookies(self.driver)
 
         time.sleep(2)
 
