@@ -36,6 +36,7 @@ class RandomPointGenerator:
         points_gdf = gpd.GeoDataFrame(geometry=points, crs=country.crs)
 
         # Add columns for latitude, longitude, and country name
+        points_gdf["id"] = range(1, num_points + 1)
         points_gdf["long"] = points_gdf.geometry.x
         points_gdf["lat"] = points_gdf.geometry.y
         points_gdf["country"] = country_name
