@@ -4,7 +4,9 @@ import geopandas as gpd
 from shapely.geometry import Point
 import matplotlib.pyplot as plt
 
+
 class RandomPointGenerator:
+    # Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.
     SHAPEFILE_PATH = "ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp"
 
     def __init__(self, random_state: int = 1234):
@@ -12,8 +14,12 @@ class RandomPointGenerator:
         self.world = gpd.read_file(RandomPointGenerator.SHAPEFILE_PATH)
         # Set the random state for reproducibility
         self.random_state = random_state
-    
-    def generate_points_in_country(self, country_name: str, num_points: int,  markersize: float = 5, show: bool = True) -> gpd.GeoDataFrame:
+
+    def generate_points_in_country(self,
+                                   country_name: str,
+                                   num_points: int,
+                                   markersize: float = 5,
+                                   show: bool = True) -> gpd.GeoDataFrame:
         """
         Generates random points within the boundaries of a specified country and plots them.
 
@@ -43,7 +49,7 @@ class RandomPointGenerator:
 
         if country.empty:
             raise ValueError(f"The country '{country_name}' was not found in the shapefile.")
-        
+
         # Extract the bounds of the country's geometry
         minx, miny, maxx, maxy = country.total_bounds
         country_polygon = country.geometry.iloc[0]
