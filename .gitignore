@@ -5,7 +5,11 @@
 __pycache__
 
 # Virtual environment
-env
+env/
 
 # Project-specific files
-draft
+draft/
+
+# mypy
+.mypy_cache/
+mypy.ini
