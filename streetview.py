@@ -16,7 +16,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
 class StreetViewScraper:
-    URL_TEMPLATE = "https://www.google.com/maps/@{lat},{long},10z" # 10z is the zoom level
+    URL_TEMPLATE = "https://www.google.com/maps/@{lat},{long},10z"  # 10z is the zoom level
     IMAGES_FOLDER = 'images'
     DEFAULT_WAIT_TIME = 3
 
@@ -51,7 +51,7 @@ class StreetViewScraper:
             >>> scraper = StreetViewScraper()
             >>> scraper.get_streetview_from_coordinates(long=2.2945, lat=48.8584)
         """
-        image_url = self._get_image_url(long=long, lat=lat)
+        image_url, lat, long = self._get_image_url(long=long, lat=lat)
         image_url = self.ANGLE_REGEX.sub(f"{angle}y", image_url)
         image_url = self.ROTATION_REGEX.sub(f"{rotation}h", image_url)
 
@@ -82,11 +82,14 @@ class StreetViewScraper:
         urls: List[str] = []
 
         # Get the image URLs
-        for _, row in tqdm(df.iterrows(), total=df.shape[0], desc="Fetching image URLs"):
+        for index, row in tqdm(df.iterrows(), total=df.shape[0], desc="Fetching image URLs"):
             country = row['country']
             long = row['long']
             lat = row['lat']
-            current_url = self._get_image_url(long=long, lat=lat)
+
+            current_url, lat, long = self._get_image_url(long=long, lat=lat)
+            df.at[index, 'lat'] = lat
+            df.at[index, 'long'] = long
             urls.append(current_url)
             time.sleep(self.wait_time)
 
@@ -174,7 +177,7 @@ class StreetViewScraper:
         actions = ActionChains(self.driver)
         actions.move_to_element_with_offset(element, middle_x, middle_y).click().perform()
 
-    def _get_image_url(self, long: float, lat: float) -> str:
+    def _get_image_url(self, long: float, lat: float) -> tuple[str, float, float]:
         """
         Retrieves the URL of the streetview image for the specified coordinates.
 
@@ -184,6 +187,8 @@ class StreetViewScraper:
 
         Returns:
             - str: The URL of the streetview image.
+            - float: The real latitude of the location.
+            - float: The real longitude of the location.
         """
 
         # Go to the specified location
@@ -215,7 +220,11 @@ class StreetViewScraper:
 
         image_url = self.driver.current_url
 
-        return image_url
+        coords_part = image_url.split('@')[1].split(',')[:2]
+        real_lat = float(coords_part[0])
+        real_long = float(coords_part[1])
+
+        return image_url, real_lat, real_long
 
     def _get_streetview(self,
                         url: str,
