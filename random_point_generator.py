@@ -15,11 +15,13 @@ class RandomPointGenerator:
         # Set the random state for reproducibility
         self.random_state = random_state
 
-    def generate_points_in_country(self,
-                                   country_name: str,
-                                   num_points: int,
-                                   markersize: float = 5,
-                                   show: bool = True) -> gpd.GeoDataFrame:
+    def generate_points_in_country(
+        self,
+        country_name: str,
+        num_points: int,
+        markersize: float = 5,
+        show: bool = True,
+    ) -> gpd.GeoDataFrame:
         """
         Generates random points within the boundaries of a specified country and plots them.
 
@@ -45,17 +47,19 @@ class RandomPointGenerator:
         random.seed(self.random_state)
 
         # Filter to obtain the shapefile of the specified country
-        country = self.world[self.world['NAME'] == country_name]
+        country = self.world[self.world["NAME"] == country_name]
 
         if country.empty:
-            raise ValueError(f"The country '{country_name}' was not found in the shapefile.")
+            raise ValueError(
+                f"The country '{country_name}' was not found in the shapefile."
+            )
 
         # Extract the bounds of the country's geometry
         minx, miny, maxx, maxy = country.total_bounds
         country_polygon = country.geometry.iloc[0]
 
         # Generate random points within the country boundaries
-        points = []
+        points: list[Point] = []
         while len(points) < num_points:
             random_point = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
             if country_polygon.contains(random_point):
@@ -72,8 +76,8 @@ class RandomPointGenerator:
 
         if show:
             # Plot the country boundaries and the random points
-            ax = country.plot(color='#CACACA', edgecolor='black')
-            points_gdf.plot(ax=ax, color='red', markersize=markersize)
+            ax = country.plot(color="#CACACA", edgecolor="black")
+            points_gdf.plot(ax=ax, color="red", markersize=markersize)
             ax.set_axis_off()
             plt.show()
 
