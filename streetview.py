@@ -52,10 +52,16 @@ class StreetViewScraper:
             >>> scraper.get_streetview_from_coordinates(long=2.2945, lat=48.8584)
         """
         image_url, lat, long = self._get_image_url(long=long, lat=lat)
-        image_url = self.ANGLE_REGEX.sub(f"{angle}y", image_url)
-        image_url = self.ROTATION_REGEX.sub(f"{rotation}h", image_url)
+        if image_url == "":
+            return
 
-        self._get_streetview(image_url, os.path.join(self.IMAGES_FOLDER, f"{long}_{lat}.png"))
+        if self._is_streetview(image_url):
+            image_url = self.ANGLE_REGEX.sub(f"{angle}y", image_url)
+            image_url = self.ROTATION_REGEX.sub(f"{rotation}h", image_url)
+
+            self._get_streetview(image_url, os.path.join(self.IMAGES_FOLDER, f"{long}_{lat}.png"))
+        else:
+            print("The provided coordinates do not have a streetview image.")
 
         self.driver.quit()
 
@@ -88,10 +94,13 @@ class StreetViewScraper:
             lat = row['lat']
 
             current_url, lat, long = self._get_image_url(long=long, lat=lat)
-            df.at[index, 'lat'] = lat
-            df.at[index, 'long'] = long
-            urls.append(current_url)
-            time.sleep(self.wait_time)
+            if self._is_streetview(current_url):
+                df.at[index, 'lat'] = lat
+                df.at[index, 'long'] = long
+                urls.append(current_url)
+            else:
+                # suppress the row if the coordinates do not have a streetview image
+                df.drop(index, inplace=True)
 
         # Store the image URLs in the DataFrame
         df['url'] = urls
@@ -194,11 +203,9 @@ class StreetViewScraper:
         # Go to the specified location
         self.driver.get(self.URL_TEMPLATE.format(long=long, lat=lat))
 
-        time.sleep(self.wait_time)
-
         try:
             # Verify if we are already in streetview mode
-            WebDriverWait(self.driver, 1).until(
+            WebDriverWait(self.driver, 6).until(
                 EC.presence_of_element_located((By.XPATH, self.SELECTORS["streetview_activated"]))
             )
         except TimeoutException:
@@ -207,11 +214,12 @@ class StreetViewScraper:
                 element = WebDriverWait(self.driver, 10).until(
                     EC.presence_of_element_located(
                         (By.CSS_SELECTOR, self.SELECTORS["streetview_button"])
-                        )
+                    )
                 )
                 element.click()
-            except NoSuchElementException:
-                pass
+            except (TimeoutException, NoSuchElementException):
+                print(f"Streetview button not found for coordinates: ({lat}, {long})")
+                return "", 0.0, 0.0
 
         # Click at the center of the screen
         self._click_center_of_screen()
@@ -243,3 +251,15 @@ class StreetViewScraper:
         time.sleep(self.wait_time)
 
         self.driver.save_screenshot(screenshot_path)
+
+    def _is_streetview(self, url: str) -> bool:
+        """
+        Checks if the provided URL is a streetview image.
+
+        Parameters:
+            - url (str): The URL to check.
+
+        Returns:
+            - bool: True if the URL is a streetview image, False otherwise.
+        """
+        return "streetview" in url
