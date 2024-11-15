@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
-
+## test 
 class StreetViewScraper:
     URL_TEMPLATE = "https://www.google.com/maps/@{lat},{long},10z"  # 10z is the zoom level
     IMAGES_FOLDER = 'images'
