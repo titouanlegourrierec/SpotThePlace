@@ -37,8 +37,8 @@ def data_to_dataframe(directory: str) -> pd.DataFrame:
 
     df = pd.DataFrame({
         "label": countries,
-        "longitude": longs,
-        "latitude": lats,
+        "long": longs,
+        "lat": lats,
         "orientation": orientations,
         "image_path": image_paths
         })
@@ -92,8 +92,8 @@ def france_grid_to_dataframe(directory: str, n: int = 10) -> pd.DataFrame:
 
     df = pd.DataFrame({
         "label": labels,
-        "longitude": longs,
-        "latitude": lats,
+        "long": longs,
+        "lat": lats,
         "orientation": orientations,
         "image_path": image_paths
         })
