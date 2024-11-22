@@ -8,7 +8,15 @@ from shapely.geometry import box, Point
 
 
 def data_to_dataframe(directory: str) -> pd.DataFrame:
+    """
+    Converts image data in a directory to a pandas DataFrame.
 
+    Args:
+        - directory (str): The path to the directory containing the image files.
+
+    Returns:
+        - pd.DataFrame: A DataFrame containing the image data with columns for labels, longitude, latitude, orientation, and image paths.
+    """
     list_files = _list_files_in_directory(directory)
 
     ORIENTATIONS_DICT = {
@@ -99,6 +107,65 @@ def france_grid_to_dataframe(directory: str, n: int = 10) -> pd.DataFrame:
         })
 
     df.to_csv(os.path.join(directory, "France_Grid.csv"), index=False)
+
+    return df
+
+
+def france_region_to_dataframe(directory: str) -> pd.DataFrame:
+    """
+    Converts image data in a directory to a pandas DataFrame with region labels for France.
+
+    Args:
+        - directory (str): The path to the directory containing the image files.
+
+    Returns:
+        - pd.DataFrame: A DataFrame containing the image data with columns for labels, longitude, latitude, orientation, and image paths.
+    """
+    list_files = _list_files_in_directory(directory)
+
+    # Load the world map and filter the country of France and its regions that are located in the metropolitan area
+    world = gpd.read_file("./ne_10m_admin_1_states_provinces/ne_10m_admin_1_states_provinces.shp")
+    country = world[world["admin"] == "France"]
+    regions = country.dissolve(by="region")
+    regions = regions[regions.geometry.bounds['miny'] > 31]
+
+    ORIENTATIONS_DICT = {
+        "90h": "E",
+        "180h": "S",
+        "270h": "W",
+        "360h": "N"
+    }
+    image_paths = []
+    labels = []
+    longs = []
+    lats = []
+    orientations = []
+
+    for file in list_files:
+        if file.endswith(".png"):
+            image_name = file.split("/")[-1]
+
+            long = float(image_name.split("_")[1])
+            lat = float(image_name.split("_")[2])
+            point = Point(long, lat)
+            match = regions[regions.geometry.contains(point)]
+
+            if not match.empty:
+                image_paths.append(file)
+                labels.append(match.index[0])
+                longs.append(long)
+                lats.append(lat)
+                orientations.append(ORIENTATIONS_DICT.get(image_name.split("_")[3].split(".")[0]))
+
+    df = pd.DataFrame({
+        "label": labels,
+        "long": longs,
+        "lat": lats,
+        "orientation": orientations,
+        "image_path": image_paths
+        })
+
+    df.to_csv(os.path.join(directory, "France_Regions.csv"), index=False)
 
     return df
 
