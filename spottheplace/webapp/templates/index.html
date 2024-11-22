@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Classifier</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="container">
+      <h1>Country Classifier</h1>
+      <form
+        action="/analyze"
+        method="post"
+        enctype="multipart/form-data"
+        id="uploadForm"
+      >
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          id="imageInput"
+          required
+        />
+        <button type="submit">Analyze</button>
+      </form>
+
+      <div class="preview-container">
+        <h3>Preview:</h3>
+        <img id="imagePreview" src="" alt="Image preview will appear here" />
+      </div>
+    </div>
+
+    <script>
+      const imageInput = document.getElementById("imageInput");
+      const imagePreview = document.getElementById("imagePreview");
+
+      imageInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.src = "";
+          imagePreview.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
