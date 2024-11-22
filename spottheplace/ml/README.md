@@ -55,3 +55,40 @@ trainer.fit(train_loader, val_loader, epochs=10)
 ### Other Features
 * Early Stopping: The `EarlyStopping` class allows for prematurely stopping training if the validation loss does not improve over a specified number of epochs (defined by the patience parameter).
 * TensorBoard Logging: The class uses PyTorch's `SummaryWriter` to log training metrics (loss and accuracy) at each epoch, enabling visualization of the training process in TensorBoard.
+
+## `criterion.py`
+
+The `criterion.py` module contains custom loss functions.
+
+### `GeodesicLoss`
+The `GeodesicLoss` is designed for regression tasks involving geographical coordinates (latitude and longitude). It calculates the geodesic distance between predicted and true coordinates using the **Haversine formula**.
+
+### Formula Overview
+
+The Haversine formula calculates the shortest distance between two points on a sphere:
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+$$
+a = \sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta \lambda}{2}\right)
+$$
+
+$$
+c = 2 \cdot \arctan2\left(\sqrt{a}, \sqrt{1 - a}\right)
+$$
+
+$$
+d = R \cdot c
+$$
+
+Where:
+- (ϕ1,ϕ2) are the latitudes in radians.
+- (λ1, λ2) are the longitudes in radians.
+- (R = 6371) km is the Earth's radius.
