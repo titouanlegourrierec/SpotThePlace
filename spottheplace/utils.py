@@ -32,7 +32,7 @@ def data_to_dataframe(directory: str) -> pd.DataFrame:
     orientations = []
 
     for file in list_files:
-        if file.endswith(".png"):
+        if file.endswith(".png") or file.endswith(".jpg"):
             image_paths.append(file)
 
             image_name = file.split("/")[-1]
@@ -83,7 +83,7 @@ def france_grid_to_dataframe(directory: str, n: int = 10) -> pd.DataFrame:
     orientations = []
 
     for file in list_files:
-        if file.endswith(".png"):
+        if file.endswith(".png") or file.endswith(".jpg"):
             image_name = file.split("/")[-1]
 
             long = float(image_name.split("_")[1])
@@ -142,7 +142,7 @@ def france_region_to_dataframe(directory: str) -> pd.DataFrame:
     orientations = []
 
     for file in list_files:
-        if file.endswith(".png"):
+        if file.endswith(".png") or file.endswith(".jpg"):
             image_name = file.split("/")[-1]
 
             long = float(image_name.split("_")[1])
