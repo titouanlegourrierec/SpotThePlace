@@ -1,3 +1,4 @@
+from datetime import datetime
 import torch
 from tqdm import tqdm
 from sklearn.metrics import accuracy_score
@@ -5,7 +6,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 
 class Trainer:
-    def __init__(self, model, criterion, optimizer, device='cpu', patience=5, log_dir="trainings/runs"):
+    def __init__(self, model, criterion, optimizer, device='cpu', patience=5, log_dir=None):
         """
         Initializes the Trainer.
 
@@ -21,6 +22,9 @@ class Trainer:
         self.optimizer = optimizer
         self.device = device
         self.early_stopping = EarlyStopping(patience=patience)
+
+        if log_dir is None:
+            log_dir = f"trainings/runs/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         self.writer = SummaryWriter(log_dir=log_dir)
 
     def train_one_epoch(self, dataloader, epoch):
@@ -66,9 +70,12 @@ class Trainer:
         avg_loss = running_loss / len(dataloader)
         accuracy = accuracy_score(torch.cat(all_targets), torch.cat(all_predictions))
 
+        self.writer.add_scalar('Loss/Train', avg_loss, epoch)
+        self.writer.add_scalar('Accuracy/Train', accuracy, epoch)
+
         return avg_loss, accuracy
 
-    def validate(self, dataloader):
+    def validate(self, dataloader, epoch):
         """
         Validates the model on a validation dataset.
 
@@ -84,7 +91,7 @@ class Trainer:
         all_targets = []
 
         with torch.no_grad():
-            for inputs, targets in tqdm(dataloader, desc="[Validation]"):
+            for batch_idx, (inputs, targets) in enumerate(tqdm(dataloader, desc="[Validation]")):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
 
                 # Forward pass
@@ -99,6 +106,9 @@ class Trainer:
 
         avg_loss = running_loss / len(dataloader)
         accuracy = accuracy_score(torch.cat(all_targets), torch.cat(all_predictions))
+
+        self.writer.add_scalar('Loss/Validation', avg_loss, epoch)
+        self.writer.add_scalar('Accuracy/Validation', accuracy, epoch)
 
         return avg_loss, accuracy
 
@@ -141,7 +151,7 @@ class Trainer:
             'targets': torch.cat(all_targets)
         }
 
-    def fit(self, train_loader, val_loader, epochs, save_path='trainings/models/model.pth'):
+    def fit(self, train_loader, val_loader, epochs, save_path='trainings/models/model_checkpoint.pth'):
         """
         Trains and validates the model for multiple epochs.
 
@@ -160,30 +170,31 @@ class Trainer:
         for epoch in range(epochs):
             print(f"Epoch [{epoch+1}/{epochs}]")
             train_loss, train_accuracy = self.train_one_epoch(train_loader, epoch)
-            val_loss, val_accuracy = self.validate(val_loader)
+            val_loss, val_accuracy = self.validate(val_loader, epoch)
 
             history['train_loss'].append(train_loss)
             history['val_loss'].append(val_loss)
             history['train_accuracy'].append(train_accuracy)
             history['val_accuracy'].append(val_accuracy)
 
-            self.writer.add_scalar('Loss/Train', train_loss, epoch)
-            self.writer.add_scalar('Loss/Validation', val_loss, epoch)
-            self.writer.add_scalar('Accuracy/Train', train_accuracy, epoch)
-            self.writer.add_scalar('Accuracy/Validation', val_accuracy, epoch)
-
             print(f"Epoch [{epoch+1}/{epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}")
 
             if val_loss < best_val_loss:
                 print(f"Validation loss improved from {best_val_loss:.4f} to {val_loss:.4f}. Saving model...")
                 best_val_loss = val_loss
-                torch.save(self.model.state_dict(), save_path)
+                torch.save({
+                    'epoch': epoch,
+                    'model_state_dict': self.model.state_dict(),
+                    'optimizer_state_dict': self.optimizer.state_dict(),
+                    'val_loss': val_loss,
+                    }, save_path)
 
             if self.early_stopping.should_stop(val_loss):
                 print("Early stopping triggered.")
                 break
 
         print(f"Training completed. Best model saved at {save_path}")
+        self.writer.close()
         return history
 
 
