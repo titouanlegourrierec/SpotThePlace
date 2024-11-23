@@ -7,6 +7,8 @@ import torch
 from torch.utils.data import Dataset
 from transformers import ViTFeatureExtractor
 
+from spottheplace.ml.utils import AddMask
+
 
 class ClassificationDataset(Dataset):
     def __init__(self, df: pd.DataFrame,
@@ -53,6 +55,7 @@ class ClassificationDataset(Dataset):
         """
         image_path = self.image_paths[idx]
         image = Image.open(image_path).convert('RGB')
+        image = AddMask((0.25, 0.25), (0.15, 0.15))(image)
 
         if self.model_type == 'ViT':
             inputs = self.feature_extractor(images=image, return_tensors="pt")
@@ -111,6 +114,7 @@ class RegressionDataset(Dataset):
         """
         image_path = self.image_paths[idx]
         image = Image.open(image_path).convert('RGB')
+        image = AddMask((0.25, 0.25), (0.15, 0.15))(image)
 
         if self.model_type == 'ViT':
             inputs = self.feature_extractor(images=image, return_tensors="pt")
