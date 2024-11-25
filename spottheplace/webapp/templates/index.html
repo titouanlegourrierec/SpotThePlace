@@ -3,35 +3,81 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Country Classifier</title>
+    <title>SpotThePlace</title>
+    <!-- Favicon -->
+    <link rel="icon" href="/static/SpotThePlace_flat.ico" />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <div class="shape"></div>
-    <div class="shape"></div>
-    <div class="container">
-      <h1>Country Classifier</h1>
-      <form
-        action="/analyze"
-        method="post"
-        enctype="multipart/form-data"
-        id="uploadForm"
-      >
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          id="imageInput"
-          required
-        />
-        <button type="submit">Analyze</button>
-      </form>
+    <!-- Header avec le logo -->
+    <header>
+      <img
+        src="/static/SpotThePlace_side.png"
+        alt="SpotThePlace Logo"
+        style="width: 300px; height: auto; display: block"
+      />
+    </header>
 
-      <div class="preview-container">
-        <h3>Preview:</h3>
-        <img id="imagePreview" src="" alt="Image preview will appear here" />
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="main-content">
+      <div class="container">
+        <h2>Find your image country !</h2>
+        <form
+          action="/analyze"
+          method="post"
+          enctype="multipart/form-data"
+          id="uploadForm"
+        >
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            id="imageInput"
+            required
+          />
+          <button type="submit">Spot it 🗺️</button>
+        </form>
+
+        <div class="preview-container">
+          <h3>Preview:</h3>
+          <img id="imagePreview" src="" alt="Image preview will appear here" />
+        </div>
+      </div>
+      <div class="side-image">
+        <img src="/static/requrv_side.png" alt="Side Illustration" />
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+      "
+    >
+      <!-- Texte en bas à gauche -->
+      <span id="footerText"
+        >2IA Deep Learning - BREGIER / LE GOURRIEREC / SEVE / TOUNKARA
+      </span>
+      <!-- Lien en bas à droite -->
+      <a
+        href="https://github.com/titouanlegourrierec/SpotThePlace"
+        target="_blank"
+        style="color: #4caf50; text-decoration: none"
+      >
+        Visit our GitHub
+      </a>
+    </footer>
 
     <script>
       const imageInput = document.getElementById("imageInput");

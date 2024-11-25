@@ -1,34 +1,65 @@
+/* Global styles */
 body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background: linear-gradient(135deg, #896caf, #af6ba6);
   height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Organise header et contenu principal en colonne */
   align-items: center;
   color: #fff;
   overflow: hidden;
 }
 
+/* Header styles */
+header {
+  display: flex; /* Aligne le logo et le texte horizontalement */
+  align-items: center; /* Centre verticalement */
+  padding: 10px;
+  width: 100%;
+  background: none; /* Fond transparent */
+  color: white; /* Couleur du texte */
+  box-shadow: none; /* Suppression de l'ombre portée */
+}
+
+header img {
+  height: 50px;
+}
+
+/* Main content layout */
+.main-content {
+  display: flex; /* Aligne le bloc central et l'image côte à côte */
+  justify-content: center; /* Centre horizontalement */
+  align-items: center; /* Aligne verticalement */
+  height: calc(80vh - 20px); /* Hauteur ajustée en fonction du header */
+}
+
+/* Container (form + classifier) */
 .container {
+  flex: 1;
+  max-width: 600px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   padding: 40px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 400px;
-  width: 90%;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+/* Side image styles */
+.side-image {
+  flex: 1;
+  text-align: center;
 }
 
+.side-image img {
+  max-width: 600px;
+  height: auto;
+  border-radius: 15px; /* Adoucit les bords */
+}
+
+/* Form styles */
 form {
   display: flex;
   flex-direction: column;
@@ -43,7 +74,7 @@ input[type="file"] {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
   width: 100%;
 }
 
@@ -60,7 +91,7 @@ button {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
   width: 100%;
 }
 
@@ -68,14 +99,17 @@ button:hover {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
 }
 
+/* Preview container */
 .preview-container {
   margin-top: 20px;
   text-align: center;
-  position: relative;
 }
 
-img {
-  max-width: 100%;
+.preview-container img {
+  max-width: 100%; /* L'image ne dépasse pas la largeur du conteneur */
+  max-height: 300px; /* Fixe une hauteur maximale */
+  width: auto; /* Conserve les proportions */
+  height: auto; /* Conserve les proportions */
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   display: none;
@@ -85,37 +119,18 @@ img {
 .preview-container h3 {
   margin-top: 15px;
   font-size: 1.2rem;
-  color: #ffffff;
 }
 
-.shape {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  animation: float 6s ease-in-out infinite;
-}
-
-.shape:nth-child(1) {
-  top: -50px;
-  left: -50px;
-}
-
-.shape:nth-child(2) {
-  bottom: -50px;
-  right: -50px;
-  width: 300px;
-  height: 300px;
-  animation-delay: -3s;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+/* Footer styles */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 14px;
 }
