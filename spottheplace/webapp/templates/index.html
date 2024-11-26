@@ -7,9 +7,45 @@
     <!-- Favicon -->
     <link rel="icon" href="/static/SpotThePlace_flat.ico" />
     <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
   </head>
   <body>
-    <!-- Header avec le logo -->
+    <div class="wave-container">
+      <svg
+        class="wave wave-left"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 320"
+      >
+        <path
+          fill="url(#gradientLeft)"
+          d="M0,96L80,122.7C160,149,320,203,480,224C640,245,800,235,960,213.3C1120,192,1280,160,1360,144L1440,128V320H1360C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320H0Z"
+        ></path>
+        <defs>
+          <linearGradient id="gradientLeft" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#af6ba6" />
+            <stop offset="100%" stop-color="#896caf" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <svg
+        class="wave wave-right"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 320"
+      >
+        <path
+          fill="url(#gradientRight)"
+          d="M0,96L80,122.7C160,149,320,203,480,224C640,245,800,235,960,213.3C1120,192,1280,160,1360,144L1440,128V320H1360C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320H0Z"
+        ></path>
+        <defs>
+          <linearGradient id="gradientRight" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#896caf" />
+            <stop offset="100%" stop-color="#af6ba6" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Header -->
     <header>
       <img
         src="/static/SpotThePlace_side.png"
@@ -20,9 +56,9 @@
 
     <div class="shape"></div>
     <div class="shape"></div>
-    <div class="main-content">
+    <div class="main-content" id="mainContent">
       <div class="container">
-        <h2>Find your image country !</h2>
+        <h2>Find your image country!</h2>
         <form
           action="/analyze"
           method="post"
@@ -49,54 +85,53 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer
-      style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-      "
+    <div
+      class="animation-container"
+      id="animationContainer"
+      style="display: none"
     >
-      <!-- Texte en bas à gauche -->
+      <div class="flags">
+        <img src="/static/flags/france.png" alt="France Flag" class="flag" />
+        <img
+          src="/static/flags/south_africa.png"
+          alt="South Africa Flag"
+          class="flag"
+        />
+        <img src="/static/flags/japan.png" alt="Japan Flag" class="flag" />
+        <img src="/static/flags/mexico.png" alt="Mexico Flag" class="flag" />
+      </div>
+      <p id="localizationText">Localization...</p>
+    </div>
+
+    <div class="result-container" id="resultContainer" style="display: none">
+      <div class="result-box">
+        <div class="result-left">
+          <h3>Your Image:</h3>
+          <img id="finalImagePreview" src="" alt="Final Image Preview" />
+        </div>
+        <div class="result-right">
+          <h3>Result:</h3>
+          <p id="resultText">
+            Your image comes from <span id="countryName"></span>
+          </p>
+          <img id="finalFlag" src="" alt="Final Flag" />
+        </div>
+      </div>
+      <button class="spot-again-btn" onclick="resetPage()">Spot again</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
       <span id="footerText"
         >2IA Deep Learning - BREGIER / LE GOURRIEREC / SEVE / TOUNKARA
       </span>
-      <!-- Lien en bas à droite -->
       <a
         href="https://github.com/titouanlegourrierec/SpotThePlace"
         target="_blank"
-        style="color: #4caf50; text-decoration: none"
+        >Visit our GitHub</a
       >
-        Visit our GitHub
-      </a>
     </footer>
 
-    <script>
-      const imageInput = document.getElementById("imageInput");
-      const imagePreview = document.getElementById("imagePreview");
-
-      imageInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = "block";
-          };
-          reader.readAsDataURL(file);
-        } else {
-          imagePreview.src = "";
-          imagePreview.style.display = "none";
-        }
-      });
-    </script>
+    <script src="/static/scripts.js"></script>
   </body>
 </html>
