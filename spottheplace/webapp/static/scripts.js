@@ -31,27 +31,12 @@ function startFlagAnimation() {
     }
     activeIndex = Math.floor(Math.random() * flags.length);
     flags[activeIndex].classList.add("active");
-  }, 250);
+  }, 200);
 }
 
 function stopFlagAnimation() {
   clearInterval(interval);
   flags.forEach((flag) => flag.classList.remove("active"));
-}
-
-function displayResults(countryName, flagSrc) {
-  animationContainer.style.display = "none";
-  resultContainer.style.display = "flex";
-
-  document.getElementById("finalImagePreview").src =
-    document.getElementById("imagePreview").src;
-  document.getElementById("countryName").textContent = countryName;
-  document.getElementById("finalFlag").src = flagSrc;
-}
-
-function resetPage() {
-  resultContainer.style.display = "none";
-  mainContent.style.display = "flex";
 }
 
 imageInput.addEventListener("change", (event) => {
@@ -69,9 +54,8 @@ imageInput.addEventListener("change", (event) => {
   }
 });
 
-function resetPage() {
+export function resetPage() {
   document.getElementById("resultContainer").style.display = "none";
-
   document.getElementById("mainContent").style.display = "flex";
 
   const imageInput = document.getElementById("imageInput");
@@ -81,6 +65,11 @@ function resetPage() {
   imagePreview.src = "";
   imagePreview.style.display = "none";
 }
+
+// Ajouter cette ligne pour l'attacher à `window`
+window.resetPage = resetPage;
+
+document.getElementById("resetButton").addEventListener("click", resetPage);
 
 function displayResults(countryName, flagSrc) {
   // Afficher les résultats
@@ -110,7 +99,7 @@ function launchFireworks() {
 
   (function frame() {
     confetti({
-      particleCount: 5,
+      particleCount: 20,
       angle: Math.random() * 360,
       spread: 55,
       origin: {
@@ -125,3 +114,70 @@ function launchFireworks() {
     }
   })();
 }
+
+// Globe setup
+const globeContainer = document.getElementById("globeContainer");
+
+// Scene, Camera, Renderer
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+  75,
+  globeContainer.offsetWidth / globeContainer.offsetHeight,
+  0.1,
+  1000
+);
+camera.position.z = 250; // Reculer légèrement la caméra pour agrandir le globe
+
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+renderer.setSize(globeContainer.offsetWidth, globeContainer.offsetHeight);
+globeContainer.appendChild(renderer.domElement);
+
+// Add lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Lumière ambiante douce
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+directionalLight.position.set(2, 1, 1).normalize();
+scene.add(directionalLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.8);
+pointLight.position.set(200, 200, 200); // Lumière pour renforcer les reliefs
+scene.add(pointLight);
+
+// Texture loader
+const textureLoader = new THREE.TextureLoader();
+const globeTexture = textureLoader.load("./static/shokunin_World_Map.png"); // Texture principale
+const displacementMap = textureLoader.load(
+  "./static/shokunin_World_Map_bw.png"
+); // Carte de déplacement (relief)
+
+// Geometry and material for the globe
+const globeGeometry = new THREE.SphereGeometry(100, 128, 128); // Maillage dense pour un relief détaillé
+const globeMaterial = new THREE.MeshStandardMaterial({
+  map: globeTexture, // Texture principale
+  displacementMap: displacementMap, // Carte de déplacement pour relief
+  displacementScale: 3, // Intensité du relief
+  roughness: 0.8, // Ajuste la rugosité pour un rendu réaliste
+  metalness: 0.1, // Faible aspect métallique pour la texture
+});
+
+// Create globe mesh
+const globeMesh = new THREE.Mesh(globeGeometry, globeMaterial);
+globeMesh.scale.set(1.1, 1.1, 1.1); // Agrandir le globe
+scene.add(globeMesh);
+
+// Handle responsive resizing
+window.addEventListener("resize", () => {
+  camera.aspect = globeContainer.offsetWidth / globeContainer.offsetHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(globeContainer.offsetWidth, globeContainer.offsetHeight);
+});
+
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+  globeMesh.rotation.y += 0.015; // Rotation du globe
+  renderer.render(scene, camera);
+}
+
+animate();

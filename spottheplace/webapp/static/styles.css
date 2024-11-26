@@ -95,6 +95,7 @@ header img {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   padding: 40px;
+  margin: 40px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -156,19 +157,18 @@ button:hover {
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
-
-/* Footer styles */
-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  position: fixed;
-  bottom: 0;
+#globeContainer {
   width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  font-size: 14px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+canvas {
+  display: block;
 }
 
 /* Flags animation styles */
@@ -178,6 +178,10 @@ footer {
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+a {
+  color: #000000;
 }
 
 .flags {
@@ -232,4 +236,18 @@ footer {
 
 .spot-again-btn:hover {
   background: linear-gradient(135deg, #2575fc, #6a11cb);
+}
+
+/* Footer styles */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 14px;
 }

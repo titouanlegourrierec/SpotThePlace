@@ -8,6 +8,9 @@
     <link rel="icon" href="/static/SpotThePlace_flat.ico" />
     <link rel="stylesheet" href="/static/styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three-globe@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three-globe@2/dist/three-globe.min.js"></script>
   </head>
   <body>
     <div class="wave-container">
@@ -80,9 +83,8 @@
           <img id="imagePreview" src="" alt="Image preview will appear here" />
         </div>
       </div>
-      <div class="side-image">
-        <img src="/static/requrv_side.png" alt="Side Illustration" />
-      </div>
+      <!-- Remplace la side-image -->
+      <div id="globeContainer" style="width: 600px; height: 600px"></div>
     </div>
 
     <div
@@ -117,7 +119,7 @@
           <img id="finalFlag" src="" alt="Final Flag" />
         </div>
       </div>
-      <button class="spot-again-btn" onclick="resetPage()">Spot again</button>
+      <button class="spot-again-btn" id="resetButton">Spot again</button>
     </div>
 
     <!-- Footer -->
@@ -132,6 +134,6 @@
       >
     </footer>
 
-    <script src="/static/scripts.js"></script>
+    <script type="module" src="/static/scripts.js"></script>
   </body>
 </html>
