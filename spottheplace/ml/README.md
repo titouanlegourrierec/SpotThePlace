@@ -65,16 +65,7 @@ The `GeodesicLoss` is designed for regression tasks involving geographical coord
 
 ### Formula Overview
 
-The Haversine formula calculates the shortest distance between two points on a sphere:
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-  });
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
+The [Haversine formula](https://fr.wikipedia.org/wiki/Formule_de_haversine) calculates the shortest distance between two points on a sphere:
 
 $$
 a = \sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta \lambda}{2}\right)
@@ -92,3 +83,15 @@ Where:
 - (ϕ1,ϕ2) are the latitudes in radians.
 - (λ1, λ2) are the longitudes in radians.
 - (R = 6371) km is the Earth's radius.
+
+## `explainable.py`
+
+The `explainable.py` module provides an implementation of [Grad-CAM](https://arxiv.org/abs/1610.02391) (Gradient-weighted Class Activation Mapping) for visualizing which regions of an input image contribute most to a model's predictions.
+
+```py
+# Initialize Grad-CAM with the model's weight file
+grad_cam = GradCam(model_path='model_weights.pth')
+
+# Generate and visualize the Grad-CAM heatmap for a given image
+grad_cam.explain(image_path='sample_image.jpg')
+```
