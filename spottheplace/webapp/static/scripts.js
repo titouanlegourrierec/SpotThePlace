@@ -66,13 +66,11 @@ export function resetPage() {
   imagePreview.style.display = "none";
 }
 
-// Ajouter cette ligne pour l'attacher à `window`
 window.resetPage = resetPage;
 
 document.getElementById("resetButton").addEventListener("click", resetPage);
 
 function displayResults(countryName, flagSrc) {
-  // Afficher les résultats
   document.getElementById("animationContainer").style.display = "none";
   document.getElementById("resultContainer").style.display = "flex";
 
@@ -115,10 +113,8 @@ function launchFireworks() {
   })();
 }
 
-// Globe setup
 const globeContainer = document.getElementById("globeContainer");
 
-// Scene, Camera, Renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -126,14 +122,13 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.z = 250; // Reculer légèrement la caméra pour agrandir le globe
+camera.position.z = 250;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true });
 renderer.setSize(globeContainer.offsetWidth, globeContainer.offsetHeight);
 globeContainer.appendChild(renderer.domElement);
 
-// Add lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Lumière ambiante douce
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -141,29 +136,29 @@ directionalLight.position.set(2, 1, 1).normalize();
 scene.add(directionalLight);
 
 const pointLight = new THREE.PointLight(0xffffff, 0.8);
-pointLight.position.set(200, 200, 200); // Lumière pour renforcer les reliefs
+pointLight.position.set(200, 200, 200);
 scene.add(pointLight);
 
 // Texture loader
 const textureLoader = new THREE.TextureLoader();
-const globeTexture = textureLoader.load("./static/shokunin_World_Map.png"); // Texture principale
+const globeTexture = textureLoader.load("./static/shokunin_World_Map.png");
 const displacementMap = textureLoader.load(
   "./static/shokunin_World_Map_bw.png"
-); // Carte de déplacement (relief)
+);
 
 // Geometry and material for the globe
-const globeGeometry = new THREE.SphereGeometry(100, 128, 128); // Maillage dense pour un relief détaillé
+const globeGeometry = new THREE.SphereGeometry(100, 128, 128);
 const globeMaterial = new THREE.MeshStandardMaterial({
-  map: globeTexture, // Texture principale
-  displacementMap: displacementMap, // Carte de déplacement pour relief
-  displacementScale: 3, // Intensité du relief
-  roughness: 0.8, // Ajuste la rugosité pour un rendu réaliste
-  metalness: 0.1, // Faible aspect métallique pour la texture
+  map: globeTexture,
+  displacementMap: displacementMap,
+  displacementScale: 3,
+  roughness: 0.8,
+  metalness: 0.1,
 });
 
 // Create globe mesh
 const globeMesh = new THREE.Mesh(globeGeometry, globeMaterial);
-globeMesh.scale.set(1.1, 1.1, 1.1); // Agrandir le globe
+globeMesh.scale.set(1.1, 1.1, 1.1);
 scene.add(globeMesh);
 
 // Handle responsive resizing
@@ -176,7 +171,7 @@ window.addEventListener("resize", () => {
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
-  globeMesh.rotation.y += 0.015; // Rotation du globe
+  globeMesh.rotation.y += 0.015;
   renderer.render(scene, camera);
 }
 
