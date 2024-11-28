@@ -7,6 +7,8 @@ import torch
 from torch.utils.data import Dataset
 from transformers import ViTFeatureExtractor
 
+from spottheplace.ml.utils import AddMask
+
 
 class ClassificationDataset(Dataset):
     def __init__(self, df: pd.DataFrame,
@@ -53,12 +55,13 @@ class ClassificationDataset(Dataset):
         """
         image_path = self.image_paths[idx]
         image = Image.open(image_path).convert('RGB')
+        image = AddMask((0.25, 0.25), (0.15, 0.15))(image)
 
         if self.model_type == 'ViT':
             inputs = self.feature_extractor(images=image, return_tensors="pt")
-            image = inputs["pixel_values"].squeeze()
+            image = inputs["pixel_values"].squeeze().to(dtype=torch.float16)
         elif self.model_type == 'CNN':
-            image = self.transform(image)
+            image = self.transform(image).to(dtype=torch.float16)
         else:
             raise ValueError('Model type not supported')
 
@@ -89,7 +92,7 @@ class RegressionDataset(Dataset):
         self.df = df
         self.image_paths = self.df['image_path'].values
 
-        self.targets = torch.tensor(self.df[['long', 'lat']].values, dtype=torch.float32)
+        self.targets = torch.tensor(self.df[['long', 'lat']].values, dtype=torch.float16)
 
         self.feature_extractor = feature_extractor
         self.transform = transform
@@ -111,12 +114,13 @@ class RegressionDataset(Dataset):
         """
         image_path = self.image_paths[idx]
         image = Image.open(image_path).convert('RGB')
+        image = AddMask((0.25, 0.25), (0.15, 0.15))(image)
 
         if self.model_type == 'ViT':
             inputs = self.feature_extractor(images=image, return_tensors="pt")
-            image = inputs["pixel_values"].squeeze()
+            image = inputs["pixel_values"].squeeze().to(dtype=torch.float16)
         elif self.model_type == 'CNN':
-            image = self.transform(image)
+            image = self.transform(image).to(dtype=torch.float16)
         else:
             raise ValueError('Model type not supported')
 
