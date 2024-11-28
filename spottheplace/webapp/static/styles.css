@@ -1,0 +1,253 @@
+/* Global styles */
+body {
+  font-family: "Poppins", sans-serif;
+  color: white;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #896caf, #af6ba6);
+  position: relative;
+}
+
+p {
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.2rem;
+}
+
+/* Wave container */
+.wave-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.wave-left {
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: auto;
+  transform: scaleY(1.2);
+  animation: waveAnimation 4s ease-in-out infinite;
+}
+
+.wave-right {
+  position: absolute;
+  bottom: 0;
+  right: -10%;
+  width: 120%;
+  height: auto;
+  transform: scaleY(1.2) scaleX(-1);
+  animation: waveAnimation 4s ease-in-out infinite reverse;
+}
+
+@keyframes waveAnimation {
+  0%,
+  100% {
+    transform: translateX(0) scaleY(1.2);
+  }
+  50% {
+    transform: translateX(20px) scaleY(1.4);
+  }
+}
+
+/* Header styles */
+header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: none;
+  color: white;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+header img {
+  height: 50px;
+  margin: 0;
+}
+
+/* Main content layout */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(80vh - 20px);
+}
+
+.container {
+  flex: 1;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  margin: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.side-image img {
+  max-width: 600px;
+  height: auto;
+  border-radius: 15px;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+input[type="file"] {
+  padding: 10px;
+  border: 2px dashed #ffffff;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+}
+
+input[type="file"]:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+button {
+  background: linear-gradient(135deg, #2575fc, #6a11cb);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+/* Preview container */
+.preview-container img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+#globeContainer {
+  width: 100%;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+canvas {
+  display: block;
+}
+
+/* Flags animation styles */
+.animation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+a {
+  color: #000000;
+}
+
+.flags {
+  display: flex;
+  gap: 80px;
+}
+
+.flag {
+  width: 150px;
+  height: auto;
+  opacity: 0.3;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.flag.active {
+  opacity: 1;
+  transform: scale(1.5);
+}
+
+/* Results styles */
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+  height: 100vh;
+}
+
+.result-left img {
+  max-width: 250px;
+  border-radius: 15px;
+}
+
+.result-right img {
+  max-width: 150px;
+  border-radius: 15px;
+}
+
+.result-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.spot-again-btn:hover {
+  background: linear-gradient(135deg, #2575fc, #6a11cb);
+}
+
+/* Footer styles */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 14px;
+}
