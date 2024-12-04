@@ -11,15 +11,39 @@ let interval;
 
 uploadForm.addEventListener("submit", (event) => {
   event.preventDefault();
+
+  const formData = new FormData(uploadForm);
+
   mainContent.style.display = "none";
   animationContainer.style.display = "flex";
-
   startFlagAnimation();
 
-  setTimeout(() => {
-    stopFlagAnimation();
-    displayResults("Japan", "/static/flags/japan.png");
-  }, 5000);
+  fetch("/analyze", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      stopFlagAnimation();
+
+      if (data.error) {
+        alert(data.error);
+        resetPage();
+      } else {
+        const countryName = data.country;
+        const confidence = data.confidence; // Get confidence from response
+        const flagSrc = `/static/flags/${countryName
+          .toLowerCase()
+          .replace(" ", "_")}.png`;
+
+        displayResults(countryName, flagSrc, confidence);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("An error occurred while processing the image.");
+      resetPage();
+    });
 });
 
 function startFlagAnimation() {
