@@ -9,7 +9,7 @@ from huggingface_hub import hf_hub_download
 def load_model():
     model_path = hf_hub_download(
         repo_id="titouanlegourrierec/SpotThePlace",
-        filename="Classification_ResNet_4countries.pth"
+        filename="Classification_ResNet50_4countries.pth"
     )
     model = models.resnet50()
     model.fc = nn.Linear(model.fc.in_features, 4)  # 4 countries
